@@ -1,36 +1,38 @@
-import express, { urlencoded } from "express";
+// backend/index.js
+import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-dotenv.config();
 import Razorpay from "razorpay";
 import payment from "./routes/productRoute.js";
 import path from "path";
+import { fileURLToPath } from "url";
 
+dotenv.config();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }))
 app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-const _dirname = path.resolve();
-
-app.use("/api/v1", payment);
-
-
+// Razorpay instance
 export const instance = new Razorpay({
-    key_id: process.env.RZR_KEY_ID,
-    key_secret: process.env.RZR_KEY_SECRET,
+  key_id: process.env.RZR_KEY_ID,
+  key_secret: process.env.RZR_KEY_SECRET,
 });
 
+// API routes
+app.use("/api/v1", payment);
 
-instance.orders.all().then(console.log).catch(console.error);
+// Serve static frontend
+app.use(express.static(path.join(__dirname, "client/dist")));
 
-app.use(express.static(path.join(_dirname, "/client/dist")));
-// app.get("*", (req, res) => {
-//     res.sendFile(path.resolve(_dirname, "client", "dist", "index.html"))
-// })
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+});
 
-app.listen(process.env.PORT, () => {
-    console.log(`server running port: ${process.env.PORT}`)
-})
+app.listen(process.env.PORT || 5000, () => {
+  console.log(`✅ Server running on port ${process.env.PORT}`);
+});
