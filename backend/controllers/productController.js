@@ -1,9 +1,7 @@
-import { copyFileSync } from "fs";
 import { instance } from "../index.js";
-import crypto from "crypto";
 import path from "path";
 import { fileURLToPath } from "url";
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const _dirname = path.dirname(fileURLToPath(import.meta.url));
 
 
 
@@ -41,7 +39,6 @@ export const paymentVerification = async (req, res) => {
     const isAuthentic = razorpay_signature === expectedSignature;
 
     if (isAuthentic) {
-        // 👇 Redirect to static HTML page with reference ID
         return res.redirect(
             `/views/success.html?reference=${razorpay_payment_id}`
         );

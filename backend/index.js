@@ -5,12 +5,9 @@ import cors from "cors";
 import Razorpay from "razorpay";
 import payment from "./routes/productRoute.js";
 import path from "path";
-import { fileURLToPath } from "url";
-
 dotenv.config();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const _dirname = path.dirname(__filename);
 
 const app = express();
 app.use(cors());
@@ -23,14 +20,12 @@ export const instance = new Razorpay({
   key_secret: process.env.RZR_KEY_SECRET,
 });
 
-// API routes
 app.use("/api/v1", payment);
 
-// Serve static frontend
-app.use(express.static(path.join(__dirname, "client/dist")));
+app.use(express.static(path.join(_dirname, "client/dist")));
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+  res.sendFile(path.join(_dirname, "client", "dist", "index.html"));
 });
 
 app.listen(process.env.PORT || 5000, () => {
