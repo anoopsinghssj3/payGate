@@ -36,7 +36,7 @@ export const paymentVerification = async (req, res) => {
 
     if (isAuthentic) {
         // 🟢 Success: redirect OR send JSON — not both
-        return res.redirect(`http://localhost:5173/paymentSuccess?reference=${razorpay_payment_id}`);
+        return res.redirect(`http://localhost:5000/paymentSuccess?reference=${razorpay_payment_id}`);
     } else {
         // 🔴 Failure
         return res.status(400).json({

@@ -15,6 +15,38 @@ const _dirname = path.resolve();
 
 app.use("/api/v1", payment);
 
+app.get("/paymentSuccess", (req, res) => {
+    res.status(200).json({
+        success: true,
+        order
+    })
+})
+
+app.get("/api/v1/fetch-payment-details", async (req, res) => {
+    const payment_id = req.query.payment_id;
+
+    if (!payment_id) {
+        return res.status(400).json({ error: "Missing payment ID" });
+    }
+
+    try {
+        const payment = await razorpay.payments.fetch(payment_id);
+
+        res.json({
+            reference: payment.id,
+            amount: payment.amount / 100,
+            name: payment.notes.name,
+            email: payment.notes.email,
+            contact: payment.notes.contact,
+            payee: "NTI Tech Academy",
+            supportEmail: "support@ntitechacademy.com"
+        });
+    } catch (err) {
+        console.error("Error fetching payment:", err);
+        res.status(500).json({ error: "Failed to fetch payment data" });
+    }
+});
+
 
 export const instance = new Razorpay({
     key_id: process.env.RZR_KEY_ID,
